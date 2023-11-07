@@ -1,4 +1,4 @@
-﻿namespace CustomerManagementApi.Requests
+﻿namespace Application.Requests
 {
     public class CustomersRequest
     {

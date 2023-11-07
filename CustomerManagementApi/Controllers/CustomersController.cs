@@ -1,4 +1,7 @@
-﻿using Application.Services.Interfaces;
+﻿using Application.Entities;
+using Application.Requests;
+using Application.Services.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,14 +14,17 @@ namespace CustomerManagementApi.Controllers
     {
         private readonly ILogger<CustomersController> _logger;
         private readonly ICustomerService _customerService;
+        private readonly IMapper _mapper;
 
         public CustomersController(
             ILogger<CustomersController> logger,
-            ICustomerService customerService
+            ICustomerService customerService,
+            IMapper mapper
             )
         {
             _logger = logger;
             _customerService = customerService;
+            _mapper = mapper;
         }
 
         // GET: api/<CustomersController>
@@ -37,9 +43,20 @@ namespace CustomerManagementApi.Controllers
 
         // POST api/<CustomersController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] CustomersRequest request)
         {
-            return Created("", nameof(value));
+            CustomersRequestValidator validations = new();
+            var result = validations.Validate(request);
+            if (!result.IsValid) 
+            {
+                var errorMessage = result.Errors.Select(result => result.ErrorMessage);
+                return BadRequest(errorMessage);
+            }
+
+            var customer = _mapper.Map<Customer>(request);
+            var entity = _customerService.Add(customer);
+
+            return Created($"/customers/{entity.Id}", entity);
         }
 
         // PUT api/<CustomersController>/5

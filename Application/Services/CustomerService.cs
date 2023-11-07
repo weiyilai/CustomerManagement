@@ -23,6 +23,11 @@ namespace Application.Services
             _mapper = mapper;
         }
 
+        public Customer Add(Customer request)
+        {
+            return _customerRepository.Add( request );
+        }
+
         public async Task<List<CustomerDTO>> GetAll()
         {
             List<Customer> entity = await _customerRepository.GetAllAsync<Customer>();

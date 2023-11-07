@@ -23,7 +23,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    InitializeDatabase();
+    // 第一次執行拿掉註解，反之註解下一行程式碼
+    //InitializeDatabase();
 }
 
 app.UseHttpsRedirection();

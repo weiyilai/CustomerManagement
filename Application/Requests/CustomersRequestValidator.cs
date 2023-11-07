@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace CustomerManagementApi.Requests
+namespace Application.Requests
 {
     public class CustomersRequestValidator : AbstractValidator<CustomersRequest>
     {
@@ -11,8 +11,10 @@ namespace CustomerManagementApi.Requests
                 .EmailAddress().WithMessage("信箱格式有誤");
 
             RuleFor(x => x.Password)
+                .NotEmpty()
                 .MinimumLength(5)
-                .Matches("").WithMessage("密碼至少要一個數字和一個英文字母");
+                .Matches("[a-z]").WithMessage("密碼至少要一個數字和一個英文字母")
+                .Matches("[0-9]").WithMessage("密碼至少要一個數字和一個英文字母");
 
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("姓名必填");
