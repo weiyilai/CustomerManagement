@@ -4,7 +4,6 @@ using Application.Requests;
 using Application.Services.Interfaces;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
-using System.Linq.Expressions;
 
 namespace Application.Services
 {
@@ -45,18 +44,36 @@ namespace Application.Services
             {
                 entities = entities.Where(t => t.Gender == request.Gender);
             }
-            
-            var customers = _mapper.Map<List<CustomerDTO>>(
-                await PaginatedList<Customer>.CreateAsync(entities, request.Paging.PageIndex ?? 1, request.Paging.PageSize)
-                );
+
+            var customersPaging =
+                await PaginatedList<Customer>.CreateAsync(
+                    entities,
+                    request.Paging.PageIndex ?? 1,
+                    request.Paging.PageSize
+                    );
+            var customers = _mapper.Map<List<CustomerDTO>>(customersPaging);
             return customers;
         }
 
         public async Task<List<CustomerDTO>> GetAll()
         {
             List<Customer> entity = await _customerRepository.GetAllAsync<Customer>();
-
             return _mapper.Map<List<CustomerDTO>>( entity );
+        }
+
+        public async Task<List<StatisticsDTO>> Statistics()
+        {
+            List<Customer> entity = await _customerRepository.GetAllAsync<Customer>();
+            var customerGroup = entity
+                .GroupBy(g => new { g.CityName, g.Gender })
+                .Select(t => new StatisticsDTO
+                {
+                    CityName = t.Key.CityName,
+                    Gender = t.Key.Gender,
+                    Total = t.Count()
+                });
+
+            return customerGroup.ToList();
         }
     }
 }

@@ -11,5 +11,7 @@ namespace Application.Services.Interfaces
         Customer Add(Customer request);
 
         Task<List<CustomerDTO>> Get(CustomersQueryRequest request);
+
+        Task<List<StatisticsDTO>> Statistics();
     }
 }

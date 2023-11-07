@@ -54,13 +54,13 @@ CREATE TABLE CustomerInfo (
     Gender nvarchar(1) not null,
     AreaName nvarchar(20) not null,
     CityName nvarchar(20) not null,
-    CONSTRAINT IX_CustomerInfo UNIQUE (Name, CityName)
+    INDEX IX_CustomerInfo NONCLUSTERED (Name, CityName)
 )
 
 CREATE TABLE RegionInfo (
     AreaName nvarchar(20) NOT NULL,
     CityName nvarchar(20) NOT NULL,
-    CONSTRAINT IX_RegionInfo UNIQUE (AreaName, CityName)
+    INDEX IX_RegionInfo NONCLUSTERED (AreaName, CityName)
 )
 
 BEGIN TRANSACTION
@@ -113,6 +113,44 @@ BEGIN TRANSACTION
         'a3@example.com',
         'a123456',
         N'王五',
+        20,
+        N'男',
+        N'廣東',
+        N'深圳'
+    );
+
+INSERT INTO CustomerInfo (
+        EMail,
+        Password,
+        Name,
+        Age,
+        Gender,
+        AreaName,
+        CityName
+    )
+    VALUES (
+        'a4@example.com',
+        'a123456',
+        N'weiyi',
+        20,
+        N'男',
+        N'上海',
+        N'上海'
+    );
+
+    INSERT INTO CustomerInfo (
+        EMail,
+        Password,
+        Name,
+        Age,
+        Gender,
+        AreaName,
+        CityName
+    )
+    VALUES (
+        'a5@example.com',
+        'a123456',
+        N'steven',
         20,
         N'男',
         N'廣東',

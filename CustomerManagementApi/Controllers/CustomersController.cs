@@ -34,6 +34,13 @@ namespace CustomerManagementApi.Controllers
             return Ok(await _customerService.GetAll());
         }
 
+        [Route("statistics")]
+        [HttpGet]
+        public async Task<IActionResult> Statistics()
+        {
+            return Ok(await _customerService.Statistics());
+        }
+
         // GET api/<CustomersController>/5
         [Route("search")]
         [HttpGet]
@@ -52,6 +59,12 @@ namespace CustomerManagementApi.Controllers
             {
                 var errorMessage = result.Errors.Select(result => result.ErrorMessage);
                 return BadRequest(errorMessage);
+            }
+
+            var entities = await _customerService.GetAll();
+            if (entities.Exists(t => t.EMail == request.Email))
+            {
+                return BadRequest("信箱已存在");
             }
 
             var customer = _mapper.Map<Customer>(request);
