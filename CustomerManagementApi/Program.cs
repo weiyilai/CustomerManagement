@@ -37,18 +37,16 @@ app.Run();
 void InitializeDatabase()
 {
     using var conn = new SqlConnection(builder.Configuration.GetConnectionString("Customer"));
-
+    conn.Open();
     string sql = @"
--- use database
-USE [master];
-GO
-
 IF OBJECT_ID(N'dbo.CustomerInfo', N'U') IS NOT NULL
-   DROP TABLE [dbo].[CustomerInfo];
-GO
+   DROP TABLE [dbo].[CustomerInfo]
+IF OBJECT_ID(N'dbo.RegionInfo', N'U') IS NOT NULL
+   DROP TABLE [dbo].[RegionInfo]
 
 CREATE TABLE CustomerInfo (
     Id int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    EMail varchar(100) not null,
     Password varchar(30) not null,
     Name nvarchar(30) not null,
     Age int null,
@@ -56,16 +54,17 @@ CREATE TABLE CustomerInfo (
     AreaName nvarchar(20) not null,
     CityName nvarchar(20) not null,
     CONSTRAINT IX_CustomerInfo UNIQUE (Name, CityName)
-);
+)
 
 CREATE TABLE RegionInfo (
-    AreaName nvarchar(20) NOT NULL PRIMARY KEY,
-    CityName nvarchar(20),
-    CONSTRAINT IX_RegionInfo UNIQUE (CityName)
-);
+    AreaName nvarchar(20) NOT NULL,
+    CityName nvarchar(20) NOT NULL,
+    CONSTRAINT IX_RegionInfo UNIQUE (AreaName, CityName)
+)
 
-BEGIN TRANSACTION;
+BEGIN TRANSACTION
     INSERT INTO CustomerInfo (
+        EMail,
         Password,
         Name,
         Age,
@@ -74,6 +73,7 @@ BEGIN TRANSACTION;
         CityName
     )
     VALUES (
+        'a1@example.com',
         'a123456',
         N'張三',
         26,
@@ -82,7 +82,7 @@ BEGIN TRANSACTION;
         N'廣州'
     );
     INSERT INTO CustomerInfo (
-        'a123456',
+        EMail,
         Password,
         Name,
         Age,
@@ -91,6 +91,7 @@ BEGIN TRANSACTION;
         CityName
     )
     VALUES (
+        'a2@example.com',
         'a123456',
         N'李四',
         25,
@@ -99,6 +100,7 @@ BEGIN TRANSACTION;
         N'上海'
     );
     INSERT INTO CustomerInfo (
+        EMail,
         Password,
         Name,
         Age,
@@ -107,6 +109,7 @@ BEGIN TRANSACTION;
         CityName
     )
     VALUES (
+        'a3@example.com',
         'a123456',
         N'王五',
         20,
@@ -191,6 +194,14 @@ BEGIN TRANSACTION;
         N'北京',
         N'北京'
     );
-COMMIT;
+COMMIT
 ";
+
+    var command = conn.CreateCommand();
+    command.Connection = conn;
+    command.CommandText = sql;
+    command.ExecuteNonQuery();
+    command.Dispose();
+    conn.Dispose();
+    conn.Close();
 }

@@ -1,23 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Data;
-using System.Data.SqlClient;
+﻿using Application.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DbContexts
 {
     public class CustomerDbContext : DbContext
     {
-        private readonly string _connectionString;
-
-        public CustomerDbContext(
-            string connectionString
-            )
+        public CustomerDbContext(DbContextOptions<CustomerDbContext> options)
+            : base(options)
         {
-            _connectionString = connectionString;
         }
 
-        public IDbConnection GetDbConnection()
-        {
-            return new SqlConnection(_connectionString);
-        }
+        public DbSet<Customer> CustomerInfo { get; set; }
     }
 }

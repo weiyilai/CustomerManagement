@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Application.Services;
+using Application.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
 
@@ -8,6 +10,10 @@ public static class ConfigureServices
         this IServiceCollection services
         )
     {
+
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        services.AddTransient<ICustomerService, CustomerService>();
+
         return services;
     }
 }
