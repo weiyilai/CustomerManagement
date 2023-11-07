@@ -47,6 +47,14 @@ namespace Infrastructure.Repositories
             return await _dbContext.Set<T>().Where(condition).AsNoTracking().ToListAsync();
         }
 
+        public IQueryable<T> GetQueryableAsync<T>(
+            Expression<Func<T, bool>> condition
+            ) 
+            where T : class
+        {
+            return _dbContext.Set<T>().Where(condition).AsNoTracking();
+        }
+
         public T GetSingle<T>(Expression<Func<T, bool>> condition) where T : class
         {
             return _dbContext.Set<T>().AsNoTracking().SingleOrDefault(condition);

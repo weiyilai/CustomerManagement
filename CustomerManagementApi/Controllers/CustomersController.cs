@@ -35,10 +35,11 @@ namespace CustomerManagementApi.Controllers
         }
 
         // GET api/<CustomersController>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [Route("search")]
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] CustomersQueryRequest request)
         {
-            return Ok();
+            return Ok(await _customerService.Get(request));
         }
 
         // POST api/<CustomersController>

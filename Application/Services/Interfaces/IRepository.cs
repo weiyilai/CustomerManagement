@@ -21,5 +21,7 @@ namespace Application.Services.Interfaces
         Task<List<T>> GetAllAsync<T>() where T : class;
 
         Task<List<T>> GetAsync<T>(Expression<Func<T, bool>> condition) where T : class;
+
+        IQueryable<T> GetQueryableAsync<T>(Expression<Func<T, bool>> condition) where T : class;
     }
 }
